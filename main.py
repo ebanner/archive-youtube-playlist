@@ -62,7 +62,6 @@ def remove_from_watch_next(playlist_item_id):
 
 if __name__ == '__main__':
     watch_next_videos = get_watch_next_videos()
-
     for watch_next_video in watch_next_videos:
         add_to_archive(watch_next_video['video_id'])
         remove_from_watch_next(watch_next_video['playlist_item_id'])
