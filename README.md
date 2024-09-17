@@ -8,5 +8,5 @@ This script will periodically move videos from my Watch Next playlist to my Arch
 
 ## See also
 
-- [Gmail auto archive daily](https://github.com/ebanner/gmail-auto-archive-daily)
+- [Gmail daily auto archive](https://github.com/ebanner/gmail-auto-archive-daily)
 - [Obsidian daily note feature](https://help.obsidian.md/Plugins/Daily+notes)
