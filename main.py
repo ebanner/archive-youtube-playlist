@@ -35,6 +35,7 @@ def get_watch_next_videos():
 
 
 def add_to_archive(video_id):
+    print(f'Archiving {video_id}...')
     request = youtube.playlistItems().insert(
         part="snippet",
         body={
@@ -53,6 +54,7 @@ def add_to_archive(video_id):
 
 
 def remove_from_watch_next(playlist_item_id):
+    print(f'Removing {playlist_item_id} from Watch next...')
     request = youtube.playlistItems().delete(
         id=playlist_item_id
     )
