@@ -1,10 +1,10 @@
 # 🚛 archive-youtube-playlist
 
-Garbage collect videos from my Watch Next playlist
+Garbage collect videos from my Watch next playlist
 
 ## Description
 
-This script will periodically move videos from my Watch Next playlist to my Archive playlist.
+This script will periodically move videos from my Watch next playlist to my Archive playlist.
 
 ## See also
 
