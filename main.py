@@ -21,7 +21,7 @@ flow = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(
 flow.run_local_server(authorization_prompt_message='')
 credentials = flow.credentials
 
-youtube = build('youtube', 'v3', credentials=credentials)
+youtube = googleapiclient.discovery.build('youtube', 'v3', credentials=credentials)
 
 
 def get_watch_next_videos():
