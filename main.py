@@ -27,7 +27,8 @@ youtube = googleapiclient.discovery.build('youtube', 'v3', credentials=credentia
 def get_watch_next_videos():
     request = youtube.playlistItems().list(
         part="snippet",
-        playlistId=WATCH_NEXT_PLAYLIST
+        playlistId=WATCH_NEXT_PLAYLIST,
+        maxResults=50,
     )
     videos = request.execute()
     videos = [{'playlist_item_id': video['id'], 'video_id': video['snippet']['resourceId']['videoId']} for video in videos['items']]
