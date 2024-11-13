@@ -30,7 +30,10 @@ if not credentials or not credentials.valid:
                 "https://www.googleapis.com/auth/youtube.force-ssl",
             ]
         )
-        flow.run_local_server(authorization_prompt_message='')
+        flow.run_local_server(
+            authorization_prompt_message='',
+            access_type='offline',
+        )
 
         credentials = flow.credentials
 
