@@ -13,4 +13,4 @@ This script will periodically move videos from my Watch next playlist to my Arch
 
 ## Resources
 
-- [OAuth credentials flow](https://www.youtube.com/watch?v=vQQEaSnQ_bs)
+- [Corey Schafer: Using OAuth to Access User Accounts](https://www.youtube.com/watch?v=vQQEaSnQ_bs)
