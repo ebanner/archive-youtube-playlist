@@ -4,7 +4,7 @@ Garbage collect videos from my `Watch next` playlist
 
 ## Description
 
-This script will move videos from my `Watch next` playlist to my Archive playlist at the end of every week.
+This script will move videos from my `Watch next` playlist to my `Archive` playlist at the end of every week.
 
 ## See also
 
