@@ -3,19 +3,35 @@ import json
 import google.oauth2.credentials
 import googleapiclient.discovery
 from google.auth.transport.requests import Request
+import boto3
 
 
 WATCH_NEXT_PLAYLIST = 'PLkd5S9lUKlOAHYE97mzLKaAIdjhHaXWXS'
 ARCHIVE_PLAYLIST = 'PLkd5S9lUKlOArJsazeSVyZ1syXY2yxdyC'
 
-with open("tokens.json", "r") as f:
-    credentials_dict = json.load(f)
+secrets_client = boto3.client("secretsmanager")
+
+SECRET_NAME = 'ArchiveWatchNextYouTubePlaylist'
+
+def get_secret(secret_key):
+    response = secrets_client.get_secret_value(SecretId=SECRET_NAME)
+    result = response['SecretString']
+    secrets = json.loads(result)
+    return secrets[secret_key]
+
+def update_secret(secret_key, secret_value):
+    return secrets_client.update_secret(
+        SecretId=SECRET_NAME,
+        SecretString=json.dumps({secret_key: secret_value})
+    )
+
+credentials_json = get_secret('tokens.json')
+credentials_dict = json.loads(credentials_json)
 
 credentials = google.oauth2.credentials.Credentials.from_authorized_user_info(credentials_dict)
 if credentials.expired:
     credentials.refresh(Request()) # Refresh the access token
-    with open('tokens.json', "w") as f:
-        f.write(credentials.to_json())
+    update_secret('tokens.json', credentials.to_json())
 
 youtube = googleapiclient.discovery.build('youtube', 'v3', credentials=credentials)
 
