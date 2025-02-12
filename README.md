@@ -6,6 +6,8 @@ Garbage collect videos from my `Watch next` playlist
 
 This script moves videos from my `Watch next` playlist to my `Archive` playlist at the end of every week.
 
+Check out a [video demo](https://www.youtube.com/watch?v=7sDBBOyIEOA).
+
 ## See also
 
 - [Gmail daily auto archive](https://github.com/ebanner/gmail-auto-archive-daily)
