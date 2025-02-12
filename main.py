@@ -1,44 +1,21 @@
-import os
-import pickle
+import json
 
-import google_auth_oauthlib.flow
+import google.oauth2.credentials
 import googleapiclient.discovery
-import googleapiclient.errors
-
 from google.auth.transport.requests import Request
 
 
 WATCH_NEXT_PLAYLIST = 'PLkd5S9lUKlOAHYE97mzLKaAIdjhHaXWXS'
 ARCHIVE_PLAYLIST = 'PLkd5S9lUKlOArJsazeSVyZ1syXY2yxdyC'
 
-credentials = None
+with open("tokens.json", "r") as f:
+    credentials_dict = json.load(f)
 
-if os.path.isfile('token.pickle'):
-    with open('token.pickle', 'rb') as f:
-        credentials = pickle.load(f)
-
-if not credentials or not credentials.valid:
-    if credentials and credentials.expired and credentials.refresh_token:
-        credentials.refresh(Request())
-    else:
-        flow = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(
-            "client_secrets.json",
-            scopes=[
-                "https://www.googleapis.com/auth/youtube.readonly",
-                "https://www.googleapis.com/auth/youtubepartner",
-                "https://www.googleapis.com/auth/youtube",
-                "https://www.googleapis.com/auth/youtube.force-ssl",
-            ]
-        )
-        flow.run_local_server(
-            authorization_prompt_message='',
-            access_type='offline',
-        )
-
-        credentials = flow.credentials
-
-        with open('token.pickle', 'wb') as f:
-            pickle.dump(credentials, f)
+credentials = google.oauth2.credentials.Credentials.from_authorized_user_info(credentials_dict)
+if credentials.expired:
+    credentials.refresh(Request()) # Refresh the access token
+    with open('tokens.json', "w") as f:
+        f.write(credentials.to_json())
 
 youtube = googleapiclient.discovery.build('youtube', 'v3', credentials=credentials)
 
