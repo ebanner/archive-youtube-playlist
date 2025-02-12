@@ -1,41 +1,37 @@
-import os
-import pickle
+import json
 
-import google_auth_oauthlib.flow
+import google.oauth2.credentials
 import googleapiclient.discovery
-import googleapiclient.errors
-
 from google.auth.transport.requests import Request
+import boto3
 
 
 WATCH_NEXT_PLAYLIST = 'PLkd5S9lUKlOAHYE97mzLKaAIdjhHaXWXS'
 ARCHIVE_PLAYLIST = 'PLkd5S9lUKlOArJsazeSVyZ1syXY2yxdyC'
 
-credentials = None
+secrets_client = boto3.client("secretsmanager")
 
-if os.path.isfile('token.pickle'):
-    with open('token.pickle', 'rb') as f:
-        credentials = pickle.load(f)
+SECRET_NAME = 'ArchiveWatchNextYouTubePlaylist'
 
-if not credentials or not credentials.valid:
-    if credentials and credentials.expired and credentials.refresh_token:
-        credentials.refresh(Request())
-    else:
-        flow = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(
-            "client_secrets.json",
-            scopes=[
-                "https://www.googleapis.com/auth/youtube.readonly",
-                "https://www.googleapis.com/auth/youtubepartner",
-                "https://www.googleapis.com/auth/youtube",
-                "https://www.googleapis.com/auth/youtube.force-ssl",
-            ]
-        )
-        flow.run_local_server(authorization_prompt_message='')
+def get_secret(secret_key):
+    response = secrets_client.get_secret_value(SecretId=SECRET_NAME)
+    result = response['SecretString']
+    secrets = json.loads(result)
+    return secrets[secret_key]
 
-        credentials = flow.credentials
+def update_secret(secret_key, secret_value):
+    return secrets_client.update_secret(
+        SecretId=SECRET_NAME,
+        SecretString=json.dumps({secret_key: secret_value})
+    )
 
-        with open('token.pickle', 'wb') as f:
-            pickle.dump(credentials, f)
+credentials_json = get_secret('tokens.json')
+credentials_dict = json.loads(credentials_json)
+
+credentials = google.oauth2.credentials.Credentials.from_authorized_user_info(credentials_dict)
+if credentials.expired:
+    credentials.refresh(Request()) # Refresh the access token
+    update_secret('tokens.json', credentials.to_json())
 
 youtube = googleapiclient.discovery.build('youtube', 'v3', credentials=credentials)
 
@@ -87,5 +83,6 @@ def lambda_handler(event, context):
         remove_from_watch_next(watch_next_video['playlist_item_id'])
 
     return {
-        'statusCode': 200
+        'statusCode': 200,
+        'body': json.dumps('Hello from Lambda!')
     }
